@@ -7,10 +7,14 @@ import java.util.concurrent.Executors;
 public class TestThread {
     public static void main(String[] args) {
         long t = System.currentTimeMillis();
+        System.out.println(0+" L S R");
         ExecutorService es = Executors.newCachedThreadPool();
+        TSController tsc = new TSController();
+        Thread td = new Thread(tsc);
+        td.start();
         try {
             Random rand = new Random();
-            int sl = rand.nextInt(5000)+5000;
+            int sl = rand.nextInt(5000);
             String input;
             BufferedReader rd = new BufferedReader(new FileReader("input.txt"));
             while ((input = rd.readLine()) != null) {
@@ -24,6 +28,5 @@ public class TestThread {
         while(!es.isTerminated());
         System.out.println("Finish");
         
-    }
-    
+    }  
 }

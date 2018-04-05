@@ -7,25 +7,39 @@ import java.util.*;
 
 public class Sensor implements Runnable {
 
-    private static String direction;
-    private static boolean running;
     private long timer;
     private String input;
+    private long stamp;
+    private static Lock lock = new ReentrantLock();
+    private Condition isbusy = lock.newCondition();
+    private static Stack st = new Stack();
+    
+    
     public Sensor() {
     }
     public Sensor(long timer, String input) {
         this.timer = timer;
         this.input = input;
     }
-    public boolean isRunning(){
-        return running;
+    
+    public Object getDirection(){
+        return st.pop();
     }
-    public String getDirection(){
-        return input;
+
+    public long getStamp() {
+        return stamp;
     }
     
-    synchronized public void run() {   
-       System.out.println((System.currentTimeMillis() - timer) + " S " + input);
+    public void run() {
+       stamp = System.currentTimeMillis() - timer;
+       System.out.println(stamp + " S " + input);
+       TSController tsc = new TSController();
+       lock.lock();
+       try {
+            st.push(input);
+            tsc.manage(stamp);
+        } catch (Exception e) {
+        } finally { lock.unlock(); }
     }
 
 }
