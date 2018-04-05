@@ -2,21 +2,25 @@ package traffic.signal.controller;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.*;
 
 public class TSController implements Runnable {
 
     private static String current = "EWL";
     private static String next = "EWL";
-    private static long GL = 12000;
-    private static long YL = 3000;
+    private Lock lock = new ReentrantLock();
+    Condition inProcess = lock.newCondition();
     private static Sensor sense = new Sensor();
     private static boolean interrupt = false;
-    private static long initial = System.currentTimeMillis();
+    private long initial;
 
     public TSController() {
     }
+    public TSController(long initial){
+        this.initial=initial;
+    }
 
-    synchronized public static void manage(long stamp) {
+    synchronized public void manage(long stamp) {
         next = (String) sense.getDirection();
         if (next.equals(current)) {
             System.out.println("Vehicles from " + stamp + " " + next + " Has passed before light turn red");
@@ -25,14 +29,17 @@ public class TSController implements Runnable {
         }
     }
 
-    synchronized public void run() {
+    public void run() {
         try {
+            lock.lock();
             while (true) {
                 long t = System.currentTimeMillis() - initial;
                 System.out.println(t + " L " + current + " G");
-                while ((System.currentTimeMillis() - t) <= 12000) {
-                    Thread.sleep(100);
-                    if ((System.currentTimeMillis() - t) >= 6000 && interrupt) {
+                long tf = t+11980;
+                while ((tf - t) >= 0) {
+                    Thread.sleep(1000);
+                    t=System.currentTimeMillis()-initial;
+                    if ((tf - t) <= 6000 && interrupt) {
                         break;
                     }
                 }
@@ -41,10 +48,13 @@ public class TSController implements Runnable {
                 Thread.sleep(6000);
                 t = System.currentTimeMillis() - initial;
                 System.out.println(t + " L " + current + " R");
-                current = next;
+                //Thread.sleep(10);
+//                current = next;
+                if(current=="EWL") current="S";
+                else current="EWL";
             }
         } catch (InterruptedException e) {
-        }
+        } finally { lock.unlock(); }
 
     }
 
