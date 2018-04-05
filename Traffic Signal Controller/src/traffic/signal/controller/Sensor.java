@@ -13,8 +13,9 @@ public class Sensor implements Runnable {
     private String input;
     public Sensor() {
     }
-    public Sensor(long timer) {
+    public Sensor(long timer, String input) {
         this.timer = timer;
+        this.input = input;
     }
     public boolean isRunning(){
         return running;
@@ -23,19 +24,8 @@ public class Sensor implements Runnable {
         return input;
     }
     
-    synchronized public void run() {
-        running=true;
-        Random rand = new Random();
-        int sl = rand.nextInt(5000)+5000;
-        try {
-            BufferedReader rd = new BufferedReader(new FileReader("input.txt"));
-            while ((input = rd.readLine()) != null) {
-                Thread.sleep(sl);
-                System.out.println((System.currentTimeMillis() - timer) + " S " + input);
-            }
-        } catch (IOException | InterruptedException e) {
-        } finally {}
-        running=false;
+    synchronized public void run() {   
+       System.out.println((System.currentTimeMillis() - timer) + " S " + input);
     }
 
 }

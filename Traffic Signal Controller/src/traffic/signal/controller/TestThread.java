@@ -8,8 +8,18 @@ public class TestThread {
     public static void main(String[] args) {
         long t = System.currentTimeMillis();
         ExecutorService es = Executors.newCachedThreadPool();
-        es.execute(new TSController());
-        es.execute(new Sensor(t));
+        try {
+            Random rand = new Random();
+            int sl = rand.nextInt(5000)+5000;
+            String input;
+            BufferedReader rd = new BufferedReader(new FileReader("input.txt"));
+            while ((input = rd.readLine()) != null) {
+                Thread.sleep(sl);
+                es.execute(new Sensor(t,input));
+            }
+        } catch (IOException | InterruptedException e) {
+        }
+        
         es.shutdown();
         while(!es.isTerminated());
         System.out.println("Finish");

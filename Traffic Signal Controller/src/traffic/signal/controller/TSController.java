@@ -3,7 +3,7 @@ package traffic.signal.controller;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class TSController implements Runnable {
+public class TSController {
     Sensor ss = new Sensor();
     private char current = 'N';
     private char next = 'N';
