@@ -13,15 +13,15 @@ public class Sensor implements Runnable {
     private static Lock lock = new ReentrantLock();
     private Condition isbusy = lock.newCondition();
     private static Stack st = new Stack();
-    
-    
+
+
     public Sensor() {
     }
     public Sensor(long timer, String input) {
         this.timer = timer;
         this.input = input;
     }
-    
+
     public Object getDirection(){
         return st.pop();
     }
@@ -29,7 +29,7 @@ public class Sensor implements Runnable {
     public long getStamp() {
         return stamp;
     }
-    
+
     public void run() {
        stamp = System.currentTimeMillis() - timer;
        System.out.println(stamp + " S " + input);
