@@ -1,8 +1,11 @@
-EWL
+W
+N
 S
-EWL
-S
-EWL
-EWL
+W
 S
 S
+E
+E
+S
+N
+W
