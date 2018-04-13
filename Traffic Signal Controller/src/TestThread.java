@@ -11,6 +11,7 @@ public class TestThread {
         long initial = System.currentTimeMillis();
         char[] direction = {'N','W','S','E'};
         String nameFile;
+        Controller ct = new Controller();
         
         System.out.println(0 + " L N R");
         System.out.println(0 + " L W R");
@@ -31,9 +32,8 @@ public class TestThread {
         es.shutdown();
         
         while(!es.isTerminated());
-        
         lit.isEndTrue();
-        
+        while(td.isAlive());
         System.out.println("Program finish");
         
     }

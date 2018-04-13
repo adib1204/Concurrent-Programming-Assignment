@@ -20,10 +20,10 @@ public class Sensor implements Runnable {
     public void run() {
         String input;
         Random rand = new Random();
-        int sleepTime = rand.nextInt(25000) + 5000;
+        int sleepTime = rand.nextInt(15000)+1000;
         
         try {
-            Thread.sleep(1000); // Give time to write input file
+            Thread.sleep(100); // Give time to write input file
             BufferedReader rd = new BufferedReader(new FileReader(fileName));
             
             while ((input = rd.readLine()) != null) {

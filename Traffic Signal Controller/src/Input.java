@@ -15,7 +15,7 @@ public class Input implements Runnable {
 
     public void run() {
         Random rand = new Random();
-        int counter = rand.nextInt(5)+1;
+        int counter = rand.nextInt(5)+5;
         
         try {
             PrintWriter wr = new PrintWriter(new FileOutputStream(fileName));
