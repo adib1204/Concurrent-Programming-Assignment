@@ -1,3 +1,4 @@
+
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.*;
@@ -10,7 +11,7 @@ public class Light implements Runnable {
 
     Queue roundRobin = new LinkedList();
     private boolean isEnd = false;
-    private static boolean block=false;
+    private static boolean block = false;
     private long initial;
     Controller control = new Controller();
 
@@ -66,13 +67,19 @@ public class Light implements Runnable {
 
     public void run() {
         try {
-            while (isEnd == false || control.getCounter()>5) {
+            Thread.sleep(100);
+            int i = 0;
+            while (control.getCounter() != 1) {
                 greenOps();
                 yellowOps();
                 redOps();
                 control.changeDirection();
                 Thread.sleep(100);// Give time to get next signal
             }
+            //Run one more time to ensure no car
+            greenOps();
+            yellowOps();
+            redOps();
         } catch (InterruptedException e) {
         }
     }

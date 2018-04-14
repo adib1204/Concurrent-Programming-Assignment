@@ -13,9 +13,10 @@ public class TestThread {
         String nameFile;
         Controller ct = new Controller();
         
-        System.out.println(0 + " L N R");
-        System.out.println(0 + " L W R");
-        System.out.println(0 + " L S R");
+        System.out.println("0 L N R");
+        System.out.println("0 L W R");
+        System.out.println("0 L S R");
+        System.out.println("0 L E R");
         
         Light lit = new Light(initial);
         Thread td = new Thread(lit);

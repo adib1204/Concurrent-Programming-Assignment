@@ -14,9 +14,10 @@ public class Input implements Runnable {
     }
 
     public void run() {
+        Controller cl = new Controller();
         Random rand = new Random();
         int counter = rand.nextInt(5)+5;
-        
+        cl.incrementCounter(counter);
         try {
             PrintWriter wr = new PrintWriter(new FileOutputStream(fileName));
             

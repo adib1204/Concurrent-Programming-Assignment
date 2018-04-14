@@ -10,12 +10,20 @@ public class Controller {
 
     private static Queue vehicle = new LinkedList();   
     private static char currentDirection = 'E';
-    private static int counter=0; //Pastikan program betul2 habis
+    private static volatile int counter=1; //Pastikan program betul2 habis
     private static volatile boolean interrupt = false;
     private static Lock lock = new ReentrantLock();
 
     public void addVehicle(char direction) {
         vehicle.offer(direction);
+    }
+    
+    synchronized public void incrementCounter(int num){
+        counter+=num;
+    }
+    
+    synchronized public void decrementCounter(){
+        counter--;
     }
 
     public char getCurrent() {
@@ -38,8 +46,7 @@ public class Controller {
         interrupt = false;
     }
 
-    public void manageLight(long stamp) {
-         
+    public void manageLight(long stamp) { 
         lock.lock();
         try {
             char nextVehicle = (char) vehicle.peek();
@@ -48,6 +55,7 @@ public class Controller {
                 vehicle.poll();
                 if (!light.isBlocked()) {
                     System.out.println("Passed since light is green");
+                    decrementCounter();
                 } else {
                     System.out.println("Has to wait for next green light");
                     vehicle.offer(nextVehicle); //Masukkan balik dalam queue since x sempat
@@ -64,10 +72,13 @@ public class Controller {
     public void changeDirection() {
         if(!vehicle.isEmpty()){
             currentDirection=(char)vehicle.poll();
-            while(vehicle.contains(currentDirection)) vehicle.remove(currentDirection);
+            decrementCounter();
+            while(vehicle.contains(currentDirection)){
+                vehicle.remove(currentDirection);
+                decrementCounter();
+            }
             System.out.println("Next direction: "+currentDirection);
             System.out.println("Current queue: "+vehicle.toString());
-            if(vehicle.isEmpty()) counter++;
         }
         else currentDirection='E';
     }
