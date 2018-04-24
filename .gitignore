@@ -19,9 +19,12 @@
 
 # NetBeans specific
 nbproject/private/
-build/
+/build/
 nbbuild/
 dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml
+
+# Traffic Signal Controller
+*.txt
