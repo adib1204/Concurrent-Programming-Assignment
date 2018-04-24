@@ -27,9 +27,4 @@ nbactions.xml
 nb-configuration.xml
 
 # Traffic Signal Controller
-/input\ E.txt
-/input\ N.txt
-/input\ S.txt
-/input\ W.txt
-/input\ EWL.txt
-/input\ EWR.txt
+*.txt
