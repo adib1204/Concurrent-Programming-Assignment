@@ -1,3 +1,5 @@
+package Traffic;
+
 import java.util.concurrent.*;
 import java.io.*;
 import java.util.*;
@@ -10,23 +12,22 @@ public class Sensor implements Runnable {
     private long initial;
     private long stamp;
     private String fileName;
-    Controller ctrl;
+    Controller ctrl = new Controller();
 
-    public Sensor(long timer, String fileName, Controller ctrl) {
+    public Sensor(long timer, String fileName) {
         this.initial = timer;
         this.fileName = fileName;
-        this.ctrl = ctrl;
     }
 
     public void run() {
         String input;
         Random rand = new Random();
         int sleepTime = rand.nextInt(15000)+1000;
-
+        
         try {
             Thread.sleep(100); // Give time to write input file
             BufferedReader rd = new BufferedReader(new FileReader(fileName));
-
+            
             while ((input = rd.readLine()) != null) {
                 Thread.sleep(sleepTime);
                 stamp = (System.currentTimeMillis() - initial) / 100 * 100;
@@ -34,7 +35,7 @@ public class Sensor implements Runnable {
                 ctrl.addVehicle(input.charAt(0));
                 ctrl.manageLight(stamp);
             }
-
+            
         } catch (IOException | InterruptedException e) {
         }
     }
