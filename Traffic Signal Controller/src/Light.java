@@ -13,13 +13,15 @@ public class Light implements Runnable {
     private boolean isEnd = false;
     private static boolean block = false;
     private long initial;
-    Controller control = new Controller();
+//    Controller control = new Controller();
+    Controller control;
 
     public Light() {
     }
 
-    public Light(long initial) {
+    public Light(long initial, Controller control) {
         this.initial = initial;
+        this.control = control;
     }
 
     public void isEndTrue() {
@@ -68,7 +70,7 @@ public class Light implements Runnable {
     public void run() {
         try {
             Thread.sleep(100);
-            int i = 0;
+//            int i = 0;
             while (control.getCounter() != 1) {
                 greenOps();
                 yellowOps();
