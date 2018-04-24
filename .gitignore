@@ -27,4 +27,4 @@ nbactions.xml
 nb-configuration.xml
 
 # Traffic Signal Controller
-*.txt
+/*.txt
