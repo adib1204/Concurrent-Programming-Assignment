@@ -1,9 +1,11 @@
+
 import java.util.concurrent.*;
 import java.io.*;
 import java.util.*;
+
 /**
- * Class ni untuk read input daripada text file sahaja
- * Lepas dia dapat input hantar ke class Controller
+ * Class ni untuk read input daripada text file sahaja Lepas dia dapat input
+ * hantar ke class Controller
  */
 public class Sensor implements Runnable {
 
@@ -21,7 +23,7 @@ public class Sensor implements Runnable {
     public void run() {
         String input;
         Random rand = new Random();
-        int sleepTime = rand.nextInt(15000)+1000;
+        int sleepTime = rand.nextInt(15000) + 1000;
 
         try {
             Thread.sleep(100); // Give time to write input file
@@ -31,8 +33,8 @@ public class Sensor implements Runnable {
                 Thread.sleep(sleepTime);
                 stamp = (System.currentTimeMillis() - initial) / 100 * 100;
                 System.out.println(stamp + " S " + input);
-                ctrl.addVehicle(input.charAt(0));
-                ctrl.manageLight(stamp);
+                ctrl.addVehicle(input);
+                ctrl.manageVehicle(stamp);
             }
 
         } catch (IOException | InterruptedException e) {

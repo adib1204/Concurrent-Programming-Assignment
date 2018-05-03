@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -7,41 +8,38 @@ import java.util.concurrent.*;
  * boleh affect operation program ni
  */
 public class TestThread {
-	public static void main(String[] args) {
 
-		long initial = System.currentTimeMillis();
-		String nameFile;
-		String[] direction = { "N", "W", "S", "E" };
+    public static void main(String[] args) {
 
-		// Initate the first output
-		System.out.println("0 L N R");
-		System.out.println("0 L W R");
-		System.out.println("0 L S R");
-		System.out.println("0 L E R");
+        long initial = System.currentTimeMillis();
+        String nameFile;
+        String[] direction = {"EWL", "N", "S", "EWR"};
 
-		Controller ctrl = new Controller();
+        // Initate the first output
+        System.out.println("0 L EWL R");
+        System.out.println("0 L N R");
+        System.out.println("0 L S R");
+        System.out.println("0 L EWR R");
 
-		// Threading the light class
-		Light lit = new Light(initial, ctrl);
-		Thread td = new Thread(lit);
-		td.start();
+        Controller ctrl = new Controller();
 
-		ExecutorService es = Executors.newCachedThreadPool();
+        // Threading the light class
+        Light lit = new Light(initial, ctrl);
+        Thread td = new Thread(lit);
+        td.start();
 
-		for (int i = 0; i < direction.length; i++) {
-			nameFile = "input " + direction[i] + ".txt";
-			es.execute(new Input(nameFile, direction[i], ctrl));
-			es.execute(new Sensor(initial, nameFile, ctrl)); // Passing time, filename, controller instances
-		}
+        ExecutorService es = Executors.newCachedThreadPool();
 
-		es.shutdown();
+        for (int i = 0; i < direction.length; i++) {
+            nameFile = "input " + direction[i] + ".txt";
+            es.execute(new Input(nameFile, direction[i], ctrl));
+            es.execute(new Sensor(initial, nameFile, ctrl)); // Passing time, filename, controller instances
+        }
 
-		while (!es.isTerminated())
-			;
-		lit.isEndTrue();
-		while (td.isAlive())
-			;
-		System.out.println("Program finish");
+        es.shutdown();
 
-	}
+        while (!es.isTerminated());
+        while (td.isAlive());
+        System.out.println("Program finish");
+    }
 }
