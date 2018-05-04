@@ -14,7 +14,7 @@ import java.util.Random;
  *
  * @author Siti Sholiha
  */
-public class TrainSensor {
+public class TrainSensor implements Runnable{
     
     private long initial;
     private long stamp;
