@@ -36,6 +36,8 @@ public class TestThread {
             es.execute(new Sensor(initial, nameFile, ctrl)); // Passing time, filename, controller instances
         }
 
+        es.execute(new TrainSensor(initial, "TA-TD.txt", ctrl));
+
         es.shutdown();
 
         while (!es.isTerminated());

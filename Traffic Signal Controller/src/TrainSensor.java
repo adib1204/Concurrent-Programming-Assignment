@@ -15,26 +15,26 @@ import java.util.Random;
  * @author Siti Sholiha
  */
 public class TrainSensor implements Runnable{
-    
+
     private long initial;
     private long stamp;
     private String fileName;
     Controller ctrl;
-    private boolean trainArriving;
-    
+    private boolean trainArriving =false;
+
     public TrainSensor(){
-        
+
     }
     public TrainSensor(long timer, String fileName, Controller ctrl) {
         this.initial = timer;
         this.fileName = fileName;
         this.ctrl = ctrl;
     }
-    
+
     public boolean getCurrentCondition(){
         return trainArriving;
     }
-    
+
     synchronized public void run() {
         String input;
         Random rand = new Random();
@@ -50,6 +50,7 @@ public class TrainSensor implements Runnable{
                 System.out.println(stamp + " S " + input);
                 if(input == "TA" ){
                     trainArriving = true;
+                    Thread.sleep(10);
                     wait();
                 }
                 else{

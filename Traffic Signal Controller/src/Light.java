@@ -12,7 +12,7 @@ public class Light implements Runnable {
     Queue roundRobin = new LinkedList();
     private static boolean block = false;
     private long initial;
-    Controller control = new Controller();
+    Controller control ;
     TrainSensor TS = new TrainSensor();
 
 
@@ -38,7 +38,7 @@ public class Light implements Runnable {
                 control.removeVehicle(control.getCurrentDirection());
             }
 
-            if ((currentTime - startTime) >= 6000 && control.isInterrupt()) {
+            if (((currentTime - startTime) >= 6000 && control.isInterrupt()) || TS.getCurrentCondition()) {
                 try {
                     Thread.sleep(100); //Bagi ada lag sikit. Baru real.
                 } catch (InterruptedException e) {
@@ -50,9 +50,18 @@ public class Light implements Runnable {
     }
 
     public void greenOpsTrain() {
-        long t = (System.currentTimeMillis() - initial) / 100 * 100;
-        long tf = t + 10000;
-        System.out.println(t + " L " + control.getCurrentDirection() + " G");
+        long startTime = (System.currentTimeMillis() - initial) / 100 * 100;
+        System.out.println(startTime + " L " + control.getCurrentDirection() + " G");
+
+        long currentTime = System.currentTimeMillis() - initial;
+        while ((currentTime - startTime) <= 10000) {
+            currentTime = System.currentTimeMillis() - initial;
+            if (((currentTime - startTime) % 1000) == 0) {
+                control.removeVehicle(control.getCurrentDirection());
+            }
+
+        }
+
     }
 
     public void yellowOps() {
@@ -74,28 +83,30 @@ public class Light implements Runnable {
 
     public void manageTrain() {
     	int i ;
+
     	if(control.getCurrentDirection() == "N") {
-    		i = 3;
+    		i = 2;
     	}
     	else
-    		i = 2;
+    		i = 1;
 
     	switch(i) {
-    	case 2 :{
-    		yellowOps();
-    		redOps();
-    		control.changeDirectionforTrain("N");
-    	}
-    	case 3: {
-    		greenOpsTrain();
-    		yellowOps();
-    		redOps();
-    		control.changeDirectionforTrain("E");
+	    	case 1 : {
+	    		yellowOps();
+	    		redOps();
+	    		control.changeDirectionforTrain("N");
+	    	}
+	    	case 2 : {
+	    		greenOpsTrain();
+	    		yellowOps();
+	    		redOps();
+	    		control.changeDirectionforTrain("EWL");
     	}
     }//end switch
-    	while(TS.getCurrentCondition() == true) {
-    		notifyAll();
-    	}
+        long startTime = (System.currentTimeMillis() - initial) / 100 * 100;
+    	System.out.println(startTime + " L " + control.getCurrentDirection() + " G");
+    	notifyAll();
+    	while(TS.getCurrentCondition() == true);
     }
 
 
@@ -104,6 +115,9 @@ public class Light implements Runnable {
             Thread.sleep(100);
             while (control.getCounter() > 0) {
                 greenOps();
+                if(TS.getCurrentCondition()) {
+                	manageTrain();
+                }
                 yellowOps();
                 redOps();
                 control.changeDirection();
