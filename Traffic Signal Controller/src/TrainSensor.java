@@ -22,6 +22,9 @@ public class TrainSensor {
     Controller ctrl;
     private boolean trainArriving;
     
+    public TrainSensor(){
+        
+    }
     public TrainSensor(long timer, String fileName, Controller ctrl) {
         this.initial = timer;
         this.fileName = fileName;
