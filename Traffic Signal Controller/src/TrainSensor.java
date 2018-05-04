@@ -41,9 +41,12 @@ public class TrainSensor {
                 Thread.sleep(sleepTime);
                 stamp = (System.currentTimeMillis() - initial) / 100 * 100;
                 System.out.println(stamp + " S " + input);
-                trainArriving = true;
-                if(trainArriving == true){
+                if(input == "TA" ){
+                    trainArriving = true;
                     wait();
+                }
+                else{
+                    trainArriving = false;
                 }
             }
 
