@@ -14,6 +14,7 @@ public class Light implements Runnable {
     private static boolean block = false;
     private long initial;
     Controller control = new Controller();
+    TrainSensor TS = new TrainSensor();
 
     public Light() {
     }
@@ -92,7 +93,9 @@ public class Light implements Runnable {
     		control.changeDirectionforTrain('E');
     	}
     }//end switch
-    //	while()
+    	while(TS.getCurrentCondition() == true) {
+    		notifyAll();
+    	}
     }
     
 
