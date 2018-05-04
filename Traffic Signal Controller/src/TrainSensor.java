@@ -31,6 +31,10 @@ public class TrainSensor {
         this.ctrl = ctrl;
     }
     
+    public boolean getCurrentCondition(){
+        return trainArriving;
+    }
+    
     synchronized public void run() {
         String input;
         Random rand = new Random();
