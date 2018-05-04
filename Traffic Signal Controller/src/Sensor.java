@@ -1,5 +1,4 @@
 
-import java.util.concurrent.*;
 import java.io.*;
 import java.util.*;
 
@@ -20,6 +19,7 @@ public class Sensor implements Runnable {
         this.ctrl = ctrl;
     }
 
+    @Override
     public void run() {
         String input;
         Random rand = new Random();
@@ -34,7 +34,7 @@ public class Sensor implements Runnable {
                 stamp = (System.currentTimeMillis() - initial) / 100 * 100;
                 System.out.println(stamp + " S " + input);
                 ctrl.addVehicle(input);
-                ctrl.manageVehicle(stamp);
+                ctrl.manageVehicle();
             }
 
         } catch (IOException | InterruptedException e) {

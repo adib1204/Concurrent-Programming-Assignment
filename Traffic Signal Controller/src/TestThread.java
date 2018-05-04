@@ -1,6 +1,4 @@
 
-import java.io.*;
-import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -15,18 +13,7 @@ public class TestThread {
         String nameFile;
         String[] direction = {"EWL", "N", "S", "EWR"};
 
-        // Initate the first output
-        System.out.println("0 L EWL R");
-        System.out.println("0 L N R");
-        System.out.println("0 L S R");
-        System.out.println("0 L EWR R");
-
         Controller ctrl = new Controller();
-
-        // Threading the light class
-        Light lit = new Light(initial, ctrl);
-        Thread td = new Thread(lit);
-        td.start();
 
         ExecutorService es = Executors.newCachedThreadPool();
 
@@ -36,10 +23,23 @@ public class TestThread {
             es.execute(new Sensor(initial, nameFile, ctrl)); // Passing time, filename, controller instances
         }
 
-        es.shutdown();
+        es.execute(new TrainSensor(initial, "TA-TD.txt", ctrl));
 
-        while (!es.isTerminated());
-        while (td.isAlive());
+        // Threading the light class
+        Light lit = new Light(initial, ctrl);
+        Thread td = new Thread(lit);
+        td.start();
+
+        // Initate the first output
+        System.out.println("Program started");
+        System.out.println("Total vehicle: " + ctrl.getCounter());
+        System.out.println("Note: Every 1 second during green light 1 vehicle passed");
+        System.out.println("0 L N R");
+        System.out.println("0 L S R");
+        System.out.println("0 L EWR R");
+
+        es.shutdown();
+        while (td.isAlive());//Ensure light thread finishes before ending the program
         System.out.println("Program finish");
     }
 }

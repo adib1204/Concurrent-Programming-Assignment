@@ -1,4 +1,5 @@
 
+import java.util.concurrent.*;
 import java.util.concurrent.locks.*;
 import java.util.*;
 
@@ -9,11 +10,14 @@ import java.util.*;
  */
 public class Controller {
 
-    private static Queue vehicle = new LinkedList();
+    private static Queue<String> vehicle = new LinkedList<String>();
     private static String currentDirection = "EWL";
     private static volatile int counter = 0; //Pastikan program betul2 habis
     private static volatile boolean interrupt = false;
+    private static volatile boolean trainArriving = false;
+    private final Semaphore available = new Semaphore(1, true);
     private static Lock lock = new ReentrantLock();
+    private static Condition isRunning = lock.newCondition();
 
     public void addVehicle(String direction) {
         vehicle.offer(direction);
@@ -23,7 +27,7 @@ public class Controller {
         counter += num;
     }
 
-    synchronized public static void decrementCounter() {
+    public void decrementCounter() {
         counter--;
     }
 
@@ -39,50 +43,82 @@ public class Controller {
         return interrupt;
     }
 
-    public boolean isEmpty() {
+    public boolean isNoVehicle() {
         return vehicle.isEmpty();
+    }
+
+    public boolean trainIncoming() {
+        return trainArriving;
     }
 
     public void setNoInterrupt() {
         interrupt = false;
     }
 
-    public void manageVehicle(long stamp) {
+    public void notifyTrain() {
         lock.lock();
         try {
-            String nextVehicle = (String) vehicle.peek();
-            Light light = new Light();
-            if (nextVehicle.equals(currentDirection) && light.isBlocked()) {
-                System.out.println("Has to wait for next green light");
-            } else {
-                interrupt = true;
-            }
-
-        } catch (Exception e) {
+            isRunning.signalAll();
         } finally {
             lock.unlock();
         }
+
     }
 
-    public void removeVehicle(String direction) {
+    public void manageVehicle() {
+        try {
+            available.acquire();
+            String nextVehicle = vehicle.peek();
+            if (!nextVehicle.equals(currentDirection)) {
+                interrupt = true;
+            }
+        } catch (InterruptedException e) {
+        } finally {
+            available.release();
+        }
+    }
+
+    public void manageTrain(String input) {
+        lock.lock();
+        try {
+            if (input.equals("TA")) {
+                trainArriving = true;
+                System.out.println("Train incoming");
+                isRunning.await();
+            } else {
+                trainArriving = false;
+                System.out.println("Train has departed");
+            }
+        } catch (InterruptedException e) {
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
+    public boolean removeVehicle(String direction) {
         if (vehicle.contains(direction)) {
             vehicle.remove(direction);
             decrementCounter();
+            return true;
         }
+        return false;
     }
 
     public void changeDirection() {
         if (!vehicle.isEmpty()) {
-            currentDirection = (String) vehicle.peek();
+            currentDirection = vehicle.peek();
             System.out.println("Next direction: " + currentDirection);
             System.out.println("Current queue: " + vehicle.toString());
         } else {
             currentDirection = "EWL";
+            System.out.println("Current queue: " + vehicle.toString());
         }
     }
 
-    public void changeDirectionforTrain(String nextDir) {
-    	currentDirection = nextDir;
-    	System.out.println("Next direction: "+nextDir);
+    public void changeDirectionForTrain(String nextDirection) {
+        currentDirection = nextDirection;
+        System.out.println("Next direction: " + nextDirection);
+        System.out.println("Current queue: " + vehicle.toString());
     }
 }
