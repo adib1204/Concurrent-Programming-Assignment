@@ -80,8 +80,8 @@ public class Controller {
             currentDirection = "EWL";
         }
     }
-    
-    public void changeDirectionforTrain(char nextDir) {
+
+    public void changeDirectionforTrain(String nextDir) {
     	currentDirection = nextDir;
     	System.out.println("Next direction: "+nextDir);
     }

@@ -12,12 +12,9 @@ public class Light implements Runnable {
     Queue roundRobin = new LinkedList();
     private static boolean block = false;
     private long initial;
-<<<<<<< HEAD
     Controller control = new Controller();
     TrainSensor TS = new TrainSensor();
-=======
-    Controller control;
->>>>>>> prototype_1
+
 
     public Light() {
     }
@@ -51,11 +48,11 @@ public class Light implements Runnable {
 
         }
     }
- 
+
     public void greenOpsTrain() {
         long t = (System.currentTimeMillis() - initial) / 100 * 100;
         long tf = t + 10000;
-        System.out.println(t + " L " + control.getCurrent() + " G");
+        System.out.println(t + " L " + control.getCurrentDirection() + " G");
     }
 
     public void yellowOps() {
@@ -74,33 +71,33 @@ public class Light implements Runnable {
         control.setNoInterrupt();
         block = false;
     }
-    
+
     public void manageTrain() {
     	int i ;
-    	if(control.getCurrent() == 'N') {
+    	if(control.getCurrentDirection() == "N") {
     		i = 3;
     	}
     	else
     		i = 2;
-    	
+
     	switch(i) {
     	case 2 :{
     		yellowOps();
     		redOps();
-    		control.changeDirectionforTrain('N');
+    		control.changeDirectionforTrain("N");
     	}
     	case 3: {
     		greenOpsTrain();
     		yellowOps();
     		redOps();
-    		control.changeDirectionforTrain('E');
+    		control.changeDirectionforTrain("E");
     	}
     }//end switch
     	while(TS.getCurrentCondition() == true) {
     		notifyAll();
     	}
     }
-    
+
 
     public void run() {
         try {
