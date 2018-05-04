@@ -1,32 +1,33 @@
+
 import java.util.concurrent.locks.*;
 import java.util.*;
 
 /**
- * Class ni akan manage traffic signal, update next signal
- * Sensor.java akan access class ni untuk bagitau sensor
- * Pastu class ni bagitau kt Light.java suruh tukar lampu
+ * Class ni akan manage traffic signal, update next signal Sensor.java akan
+ * access class ni untuk bagitau sensor Pastu class ni bagitau kt Light.java
+ * suruh tukar lampu
  */
 public class Controller {
 
-    private static Queue vehicle = new LinkedList();   
-    private static char currentDirection = 'E';
-    private static volatile int counter=1; //Pastikan program betul2 habis
+    private static Queue vehicle = new LinkedList();
+    private static String currentDirection = "EWL";
+    private static volatile int counter = 0; //Pastikan program betul2 habis
     private static volatile boolean interrupt = false;
     private static Lock lock = new ReentrantLock();
 
-    public void addVehicle(char direction) {
+    public void addVehicle(String direction) {
         vehicle.offer(direction);
     }
-    
-    synchronized public void incrementCounter(int num){
-        counter+=num;
+
+    synchronized public static void incrementCounter(int num) {
+        counter += num;
     }
-    
-    synchronized public void decrementCounter(){
+
+    synchronized public static void decrementCounter() {
         counter--;
     }
 
-    public char getCurrent() {
+    public String getCurrentDirection() {
         return currentDirection;
     }
 
@@ -37,50 +38,47 @@ public class Controller {
     public boolean isInterrupt() {
         return interrupt;
     }
-    
-    public boolean isEmpty(){
+
+    public boolean isEmpty() {
         return vehicle.isEmpty();
     }
-    
+
     public void setNoInterrupt() {
         interrupt = false;
     }
 
-    public void manageLight(long stamp) { 
+    public void manageVehicle(long stamp) {
         lock.lock();
         try {
-            char nextVehicle = (char) vehicle.peek();
+            String nextVehicle = (String) vehicle.peek();
             Light light = new Light();
-            if (nextVehicle == currentDirection) {
-                vehicle.poll();
-                if (!light.isBlocked()) {
-                    System.out.println("Passed since light is green");
-                    decrementCounter();
-                } else {
-                    System.out.println("Has to wait for next green light");
-                    vehicle.offer(nextVehicle); //Masukkan balik dalam queue since x sempat
-                }
-                
+            if (nextVehicle.equals(currentDirection) && light.isBlocked()) {
+                System.out.println("Has to wait for next green light");
             } else {
                 interrupt = true;
             }
-            
+
         } catch (Exception e) {
-        } finally {lock.unlock();}      
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void removeVehicle(String direction) {
+        if (vehicle.contains(direction)) {
+            vehicle.remove(direction);
+            decrementCounter();
+        }
     }
 
     public void changeDirection() {
-        if(!vehicle.isEmpty()){
-            currentDirection=(char)vehicle.poll();
-            decrementCounter();
-            while(vehicle.contains(currentDirection)){
-                vehicle.remove(currentDirection);
-                decrementCounter();
-            }
-            System.out.println("Next direction: "+currentDirection);
-            System.out.println("Current queue: "+vehicle.toString());
+        if (!vehicle.isEmpty()) {
+            currentDirection = (String) vehicle.peek();
+            System.out.println("Next direction: " + currentDirection);
+            System.out.println("Current queue: " + vehicle.toString());
+        } else {
+            currentDirection = "EWL";
         }
-        else currentDirection='E';
     }
     
     public void changeDirectionforTrain(char nextDir) {

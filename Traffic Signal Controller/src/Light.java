@@ -10,21 +10,21 @@ import java.util.concurrent.locks.*;
 public class Light implements Runnable {
 
     Queue roundRobin = new LinkedList();
-    private boolean isEnd = false;
     private static boolean block = false;
     private long initial;
+<<<<<<< HEAD
     Controller control = new Controller();
     TrainSensor TS = new TrainSensor();
+=======
+    Controller control;
+>>>>>>> prototype_1
 
     public Light() {
     }
 
-    public Light(long initial) {
+    public Light(long initial, Controller control) {
         this.initial = initial;
-    }
-
-    public void isEndTrue() {
-        isEnd = true;
+        this.control = control;
     }
 
     public boolean isBlocked() {
@@ -32,20 +32,23 @@ public class Light implements Runnable {
     }
 
     public void greenOps() {
+        long startTime = (System.currentTimeMillis() - initial) / 100 * 100;
+        System.out.println(startTime + " L " + control.getCurrentDirection() + " G");
+        long currentTime = System.currentTimeMillis() - initial;
+        while ((currentTime - startTime) <= 12000) {
+            currentTime = System.currentTimeMillis() - initial;
+            if (((currentTime - startTime) % 1000) == 0) {
+                control.removeVehicle(control.getCurrentDirection());
+            }
 
-        long t = (System.currentTimeMillis() - initial) / 100 * 100;
-        long tf = t + 12000;
-        System.out.println(t + " L " + control.getCurrent() + " G");
-        while ((tf - t) >= 0) {
-            t = System.currentTimeMillis() - initial;
-            if ((tf - t) <= 6000 && control.isInterrupt()) {
-                Random r = new Random();
+            if ((currentTime - startTime) >= 6000 && control.isInterrupt()) {
                 try {
                     Thread.sleep(100); //Bagi ada lag sikit. Baru real.
                 } catch (InterruptedException e) {
                 }
                 break;
             }
+
         }
     }
  
@@ -57,17 +60,17 @@ public class Light implements Runnable {
 
     public void yellowOps() {
         block = true;
-        long t = (System.currentTimeMillis() - initial) / 100 * 100;
-        long tf = t + 6000;
-        System.out.println(t + " L " + control.getCurrent() + " Y");
-        while ((tf - t) >= 0) {
-            t = System.currentTimeMillis() - initial;
+        long startTime = (System.currentTimeMillis() - initial) / 100 * 100;
+        long currentTime = System.currentTimeMillis() - initial;
+        System.out.println(startTime + " L " + control.getCurrentDirection() + " Y");
+        while ((currentTime - startTime) <= 6000) {
+            currentTime = System.currentTimeMillis() - initial;
         }
     }
 
     public void redOps() {
         long t = (System.currentTimeMillis() - initial) / 100 * 100;
-        System.out.println(t + " L " + control.getCurrent() + " R");
+        System.out.println(t + " L " + control.getCurrentDirection() + " R");
         control.setNoInterrupt();
         block = false;
     }
@@ -102,18 +105,13 @@ public class Light implements Runnable {
     public void run() {
         try {
             Thread.sleep(100);
-            int i = 0;
-            while (control.getCounter() != 1) {
+            while (control.getCounter() > 0) {
                 greenOps();
                 yellowOps();
                 redOps();
                 control.changeDirection();
                 Thread.sleep(100);// Give time to get next signal
             }
-            //Run one more time to ensure no car
-            greenOps();
-            yellowOps();
-            redOps();
         } catch (InterruptedException e) {
         }
     }
