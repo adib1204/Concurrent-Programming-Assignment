@@ -82,4 +82,9 @@ public class Controller {
         }
         else currentDirection='E';
     }
+    
+    public void changeDirectionforTrain(char nextDir) {
+    	currentDirection = nextDir;
+    	System.out.println("Next direction: "+nextDir);
+    }
 }

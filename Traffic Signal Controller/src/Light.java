@@ -47,6 +47,12 @@ public class Light implements Runnable {
             }
         }
     }
+ 
+    public void greenOpsTrain() {
+        long t = (System.currentTimeMillis() - initial) / 100 * 100;
+        long tf = t + 10000;
+        System.out.println(t + " L " + control.getCurrent() + " G");
+    }
 
     public void yellowOps() {
         block = true;
@@ -64,6 +70,31 @@ public class Light implements Runnable {
         control.setNoInterrupt();
         block = false;
     }
+    
+    public void manageTrain() {
+    	int i ;
+    	if(control.getCurrent() == 'N') {
+    		i = 3;
+    	}
+    	else
+    		i = 2;
+    	
+    	switch(i) {
+    	case 2 :{
+    		yellowOps();
+    		redOps();
+    		control.changeDirectionforTrain('N');
+    	}
+    	case 3: {
+    		greenOpsTrain();
+    		yellowOps();
+    		redOps();
+    		control.changeDirectionforTrain('E');
+    	}
+    }//end switch
+    //	while()
+    }
+    
 
     public void run() {
         try {
