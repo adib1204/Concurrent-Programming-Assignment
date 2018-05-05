@@ -4,22 +4,21 @@ import java.util.concurrent.locks.*;
 import java.util.*;
 
 /**
- * Class ni akan manage traffic signal, update next signal Sensor.java akan
- * access class ni untuk bagitau sensor Pastu class ni bagitau kt Light.java
- * suruh tukar lampu
+ * This class handle interaction between sensor and traffic light
+ * Also act as main base operation (Like traffic controller headquarters)
  */
 public class Controller {
 
     private static Queue<String> vehicle = new LinkedList<String>();
     private static String currentDirection = "EWL";
-    private static volatile int counter = 0; //Pastikan program betul2 habis
+    private static volatile int counter = 0;
     private static volatile boolean interrupt = false;
     private static volatile boolean trainArriving = false;
     private final Semaphore available = new Semaphore(1, true);
     private static Lock lock = new ReentrantLock();
     private static Condition isRunning = lock.newCondition();
 
-    public void addVehicle(String direction) {
+    synchronized public void addVehicle(String direction) {
         vehicle.offer(direction);
     }
 

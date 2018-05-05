@@ -1,18 +1,29 @@
 
 /**
- * Class ni untuk jalankan tukar lampu je Lepas habis dia akan tukar ke next
- * direction melalui Controller class
+ * Class to operate the traffic light
+ * Get the direction of the green light from Controller class
  */
 public class Light implements Runnable {
 
     private long initial;
     Controller control;
 
+    /**
+     * Create an instance of the light class.
+     * @param initial - The time at the start of the program
+     * @param control - An object instantiated from class Controller 
+     */
     public Light(long initial, Controller control) {
         this.initial = initial;
         this.control = control;
     }
 
+    /**
+     * Operate the green light (duration between 6 to 12 seconds).
+     * Also print the timestamp at the output.
+     * If a vehicle come from another direction, the green light will be stopped before it reach 12 second (minimum: 6 second).
+     * Assume one vehicle passed the intersection for every one second the green light is operating.
+     */
     public void changeToGreenLight() {
         int num = 0; //Number of car that has passed the intersection during greenLight
         long startTime = (System.currentTimeMillis() - initial) / 100 * 100;
@@ -29,7 +40,8 @@ public class Light implements Runnable {
 
             if (((currentTime - startTime) >= 6000 && control.isInterrupt()) || control.trainIncoming()) {
                 try {
-                    Thread.sleep(100); //Bagi ada lag sikit. Baru real.
+                    //To make traffic light realistic before changing into yellow light (Changing from green light to yellow light takes 100 milliseconds)
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                 }
                 break;
@@ -38,7 +50,13 @@ public class Light implements Runnable {
         System.out.println(num + " vehicle from " + control.getCurrentDirection() + " has passed during green light");
     }
 
-    //Duration of green light can be determined by user
+    /**
+     * Operate the green light (duration determined by the variable).
+     * Also print the timestamp at the output.
+     * Assume one vehicle passed the intersection for every one second the green light is operating.
+     * If sensor has detected the train has departed (TD), this green light will be stopped and changed to yellow light.
+     * @param i - Duration of the green light in milliseconds
+     */
     public void changeToGreenLight(int i) {
         int num = 0; //Number of car that has passed the intersection during greenLight
         long startTime = (System.currentTimeMillis() - initial) / 100 * 100;
@@ -59,6 +77,10 @@ public class Light implements Runnable {
         System.out.println(num + " vehicle from " + control.getCurrentDirection() + " has passed during green light");
     }
 
+    /**
+     * Operate the yellow light (duration is 6 seconds).
+     * Also print the timestamp at the output.
+     */
     public void changeToYellowLight() {
         long startTime = (System.currentTimeMillis() - initial) / 100 * 100;
         long currentTime = System.currentTimeMillis() - initial;
@@ -68,6 +90,10 @@ public class Light implements Runnable {
         }
     }
 
+    /**
+     * Operate the red light.
+     * Also print the timestamp at the output.
+     */
     public void changeToRedLight() {
         long t = (System.currentTimeMillis() - initial) / 100 * 100;
         System.out.println(t + " L " + control.getCurrentDirection() + " R");
@@ -75,6 +101,13 @@ public class Light implements Runnable {
         System.out.println("Vehicle left: " + control.getCounter());
     }
 
+    /**
+     * Manage the operation of the traffic light while train is arriving.
+     * If sensor detect TA and current direction is not N, it will be changed to N first.
+     * Then green light is operated at direction N for 10 seconds before changed to EWL.
+     * After the train has departed (TD), it will be changed back to normal traffic light operation.
+     * @param extra - Determine whether TA is read during green/yellow/red light. Is false if read during green light.
+     */
     public void manageTrainOperation(boolean extra) {
         int i;
         if (control.getCurrentDirection().equals("N")) {
@@ -97,9 +130,10 @@ public class Light implements Runnable {
             }
         }//end switch
         control.notifyTrain();
-        changeToGreenLight(Integer.MAX_VALUE);//Selagi x read TD EWL hijau
+        changeToGreenLight(Integer.MAX_VALUE);
 
-        if (extra) {  //Kalau read TA masa yellow/red light, dia akan run bawah ni dulu
+        //If TA is read during yellow/red light, It will run the method below first
+        if (extra) {  
             changeToYellowLight();
             changeToRedLight();
         }
@@ -108,6 +142,7 @@ public class Light implements Runnable {
     @Override
     public void run() {
         try {
+            //Run until all cars has passed the intersection
             while (control.getCounter() > 0) {
                 do {
                     //If there is no vehicle EWL stays green
@@ -123,7 +158,8 @@ public class Light implements Runnable {
                 }
 
                 control.changeDirection();
-                Thread.sleep(100);// Give time to get next signal
+                // Give time to get next direction
+                Thread.sleep(100);
             }
         } catch (InterruptedException e) {
         }

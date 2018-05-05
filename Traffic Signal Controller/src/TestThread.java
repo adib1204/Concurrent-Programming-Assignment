@@ -2,8 +2,8 @@
 import java.util.concurrent.*;
 
 /**
- * Class ni untuk start thread sahaja Jangan tambah apa2 variable method yang
- * boleh affect operation program ni
+ * Class to test the thread
+ * Start the traffic light program
  */
 public class TestThread {
 
@@ -13,7 +13,8 @@ public class TestThread {
         String nameFile;
         String[] direction = {"EWL", "N", "S", "EWR"};
 
-        Controller ctrl = new Controller();
+        //To ensure data integrity, Other classes will use the same object instantiated from class Controller
+        Controller ctrl = new Controller();//
 
         ExecutorService es = Executors.newCachedThreadPool();
 
@@ -24,11 +25,7 @@ public class TestThread {
         }
 
         es.execute(new TrainSensor(initial, "TA-TD.txt", ctrl));
-
-        // Threading the light class
-        Light lit = new Light(initial, ctrl);
-        Thread td = new Thread(lit);
-        td.start();
+        es.execute(new Light(initial, ctrl));
 
         // Initate the first output
         System.out.println("Program started");
@@ -39,7 +36,9 @@ public class TestThread {
         System.out.println("0 L EWR R");
 
         es.shutdown();
-        while (td.isAlive());//Ensure light thread finishes before ending the program
+        
+        //Ensure all threads are terminated before ending the program
+        while(!es.isTerminated())
         System.out.println("Program finish");
     }
 }
