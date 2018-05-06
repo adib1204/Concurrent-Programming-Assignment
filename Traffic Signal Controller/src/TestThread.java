@@ -1,11 +1,9 @@
 
-import java.io.*;
-import java.util.*;
 import java.util.concurrent.*;
 
 /**
- * Class ni untuk start thread sahaja Jangan tambah apa2 variable method yang
- * boleh affect operation program ni
+ * Class to test the thread
+ * Start the traffic light program
  */
 public class TestThread {
 
@@ -15,18 +13,8 @@ public class TestThread {
         String nameFile;
         String[] direction = {"EWL", "N", "S", "EWR"};
 
-        // Initate the first output
-        System.out.println("0 L EWL R");
-        System.out.println("0 L N R");
-        System.out.println("0 L S R");
-        System.out.println("0 L EWR R");
-
-        Controller ctrl = new Controller();
-
-        // Threading the light class
-        Light lit = new Light(initial, ctrl);
-        Thread td = new Thread(lit);
-        td.start();
+        //To ensure data integrity, Other classes will use the same object instantiated from class Controller
+        Controller ctrl = new Controller();//
 
         ExecutorService es = Executors.newCachedThreadPool();
 
@@ -36,10 +24,21 @@ public class TestThread {
             es.execute(new Sensor(initial, nameFile, ctrl)); // Passing time, filename, controller instances
         }
 
-        es.shutdown();
+        es.execute(new TrainSensor(initial, "TA-TD.txt", ctrl));
+        es.execute(new Light(initial, ctrl));
 
-        while (!es.isTerminated());
-        while (td.isAlive());
+        // Initate the first output
+        System.out.println("Program started");
+        System.out.println("Total vehicle: " + ctrl.getCounter());
+        System.out.println("Note: Every 1 second during green light 1 vehicle passed");
+        System.out.println("0 L N R");
+        System.out.println("0 L S R");
+        System.out.println("0 L EWR R");
+
+        es.shutdown();
+        
+        //Ensure all threads are terminated before ending the program
+        while(!es.isTerminated())
         System.out.println("Program finish");
     }
 }
