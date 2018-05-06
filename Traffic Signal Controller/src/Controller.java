@@ -85,4 +85,6 @@ public class Controller {
     	currentDirection = nextDir;
     	System.out.println("Next direction: "+nextDir);
     }
+
+
 }
