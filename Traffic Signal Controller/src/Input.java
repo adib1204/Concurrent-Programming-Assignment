@@ -7,8 +7,8 @@ import java.util.*;
  */
 public class Input implements Runnable {
 
-    private String fileName;
-    String direction;
+    private final String fileName;
+    private final String direction;
     Controller ctrl;
 
     /**

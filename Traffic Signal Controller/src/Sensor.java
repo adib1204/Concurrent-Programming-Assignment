@@ -30,7 +30,7 @@ public class Sensor implements Runnable {
     public void run() {
         String input;
         Random rand = new Random();
-        int sleepTime = rand.nextInt(15000) + 1000;
+        int sleepTime;
         
         try {
             // Give time for class Input to write into the input file
@@ -38,6 +38,7 @@ public class Sensor implements Runnable {
             BufferedReader rd = new BufferedReader(new FileReader(fileName));
 
             while ((input = rd.readLine()) != null) {
+                sleepTime = rand.nextInt(15000) + 1000;
                 Thread.sleep(sleepTime);
                 stamp = (System.currentTimeMillis() - initial) / 100 * 100;
                 System.out.println(stamp + " S " + input);

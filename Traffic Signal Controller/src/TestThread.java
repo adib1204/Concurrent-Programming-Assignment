@@ -29,7 +29,6 @@ public class TestThread {
 
         // Initate the first output
         System.out.println("Program started");
-        System.out.println("Total vehicle: " + ctrl.getCounter());
         System.out.println("Note: Every 1 second during green light 1 vehicle passed");
         System.out.println("0 L N R");
         System.out.println("0 L S R");
@@ -38,7 +37,7 @@ public class TestThread {
         es.shutdown();
         
         //Ensure all threads are terminated before ending the program
-        while(!es.isTerminated())
+        while(!es.isTerminated());
         System.out.println("Program finish");
     }
 }
