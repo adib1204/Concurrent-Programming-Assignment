@@ -14,7 +14,7 @@ public class Controller {
     private static volatile int counter = 0;
     private static volatile boolean interrupt = false;
     private static volatile boolean trainArriving = false;
-    private final Semaphore available = new Semaphore(1, true);
+    private static Semaphore available = new Semaphore(1, true);
     private static Lock lock = new ReentrantLock();
     private static Condition isRunning = lock.newCondition();
 

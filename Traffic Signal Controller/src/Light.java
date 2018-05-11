@@ -147,7 +147,7 @@ public class Light implements Runnable {
                 do {
                     //If there is no vehicle EWL stays green
                     changeToGreenLight();
-                } while (control.isNoVehicle() && control.getCurrentDirection().equals("EWL"));
+                } while (control.isNoVehicle() && control.getCurrentDirection().equals("EWL")&&control.getCounter()>0);
                 if (control.trainIncoming()) {
                     manageTrainOperation(false);
                 }

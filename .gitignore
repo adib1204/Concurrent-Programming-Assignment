@@ -18,8 +18,7 @@
 /.project
 
 # NetBeans specific
-nbproject/private/
-<<<<<<< HEAD
+/nbproject/private/
 */build/
 /nbbuild/
 /dist/
@@ -27,14 +26,6 @@ nbproject/private/
 /nbactions.xml
 /nb-configuration.xml
 /GUI Beta/dist/
-=======
-/build/
-nbbuild/
-dist/
-nbdist/
-nbactions.xml
-nb-configuration.xml
 
 # Traffic Signal Controller
 *.txt
->>>>>>> 45db6006b21efb447642cfb03e04f791fecf62d6
