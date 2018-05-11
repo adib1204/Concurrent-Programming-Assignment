@@ -28,7 +28,7 @@
 /GUI Beta/dist/
 
 # Traffic Signal Controller
-"input EWL.txt"
-"input EWR.txt"
-"input N.txt"
-"input S.txt"
+Traffic\ Signal\ Controller/input\ EWL.txt
+Traffic\ Signal\ Controller/input\ EWR.txt
+Traffic\ Signal\ Controller/input\ N.txt
+Traffic\ Signal\ Controller/input\ S.txt
