@@ -21,7 +21,7 @@ public class TestThread {
         for (int i = 0; i < direction.length; i++) {
             nameFile = "input " + direction[i] + ".txt";
             es.execute(new Input(nameFile, direction[i], ctrl));
-            es.execute(new Sensor(initial, nameFile, ctrl)); // Passing time, filename, controller instances
+            es.execute(new RoadSensor(initial, nameFile, ctrl)); // Passing time, filename, controller instances
         }
 
         es.execute(new TrainSensor(initial, "TA-TD.txt", ctrl));

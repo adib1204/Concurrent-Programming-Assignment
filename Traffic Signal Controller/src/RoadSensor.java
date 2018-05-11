@@ -7,7 +7,7 @@ import java.util.*;
  * Print the timestamp of sensor at the output
  * Notify the controller to make decision
  */
-public class Sensor implements Runnable {
+public class RoadSensor implements Runnable {
 
     private long initial;
     private long stamp;
@@ -20,7 +20,7 @@ public class Sensor implements Runnable {
      * @param fileName - Name of the file to read (*.txt)
      * @param ctrl - An object instantiated from class Controller
      */
-    public Sensor(long timer, String fileName, Controller ctrl) {
+    public RoadSensor(long timer, String fileName, Controller ctrl) {
         this.initial = timer;
         this.fileName = fileName;
         this.ctrl = ctrl;
